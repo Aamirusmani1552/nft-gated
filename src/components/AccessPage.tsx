@@ -6,10 +6,13 @@ import { useAddress } from "@thirdweb-dev/react";
 import ConnectWithWhalesWallet from "./_connectWithWhalesWallet";
 import Step3Whales from "./Step3Whales";
 import Step2Whales from "./Step2Whales";
+import Step5Whales from "./Step5Whales";
 
-type Props = {};
+type Props = {
+  setHasAccess: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-const AccessPage: FC<Props> = (props): ReactElement => {
+const AccessPage: FC<Props> = ({ setHasAccess }): ReactElement => {
   const address = useAddress();
   const [utility, setUtility] = useState<NftValidationUtility>();
   const [step, setStep] = useState<number>();
@@ -38,18 +41,23 @@ const AccessPage: FC<Props> = (props): ReactElement => {
     init();
   }, [address]);
 
+  useEffect(() => {
+    if (step == NftValidationUtility.STEP_CLAIMED) {
+      setHasAccess(true);
+    }
+  }, [step]);
+
   return (
     <section className="w-full flex-1 z-10 font-semibold text-4xl md:text-5xl flex flex-col items-center justify-center gap-4 relative">
-      {utility &&
-        (step == NftValidationUtility.STEP_UNINITIALIZED ? (
-          <ConnectWithWhalesWallet />
-        ) : step == NftValidationUtility.STEP_WALLET_CONNECTED ? (
-          <Step2Whales />
-        ) : step == NftValidationUtility.STEP_NFTS_FETCHED ? (
-          <Step3Whales utility={utility} />
-        ) : (
-          <div>Next step</div>
-        ))}
+      {utility && utility.step == NftValidationUtility.STEP_INITIALIZED ? (
+        <ConnectWithWhalesWallet utility={utility} />
+      ) : utility && utility.step == NftValidationUtility.STEP_NFTS_FETCHED ? (
+        <Step3Whales utility={utility} />
+      ) : utility && utility.step == NftValidationUtility.STEP_RESERVED ? (
+        <Step5Whales utility={utility} />
+      ) : (
+        <div>Loading...</div>
+      )}
     </section>
   );
 };

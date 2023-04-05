@@ -28,16 +28,7 @@ export default function Home() {
       >
         <Header />
         {!hasAccess ? (
-          <>
-            <DynamicUtilityComponent />
-            {/* {showAccessModal && (
-              <DynamicUtilityComponent
-                setShowAccessModal={setShowAccessModal}
-                setHasAccess={setHasAccess}
-              />
-            )}
-            ) */}
-          </>
+          <DynamicUtilityComponent setHasAccess={setHasAccess} />
         ) : (
           <Chat />
         )}

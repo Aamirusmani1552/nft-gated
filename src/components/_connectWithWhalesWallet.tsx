@@ -1,8 +1,11 @@
 import React from "react";
 import { BsArrowRight } from "react-icons/bs";
 import { easeInOut, motion } from "framer-motion";
+import { NftValidationUtility } from "@whal3s/whal3s.js";
 
-type Props = {};
+type Props = {
+  utility: NftValidationUtility;
+};
 
 const parentVariant = {
   hidden: {},
@@ -32,9 +35,11 @@ const childrenVariant = {
   },
 };
 
-const ConnectWithWhalesWallet = (props: Props) => {
+const ConnectWithWhalesWallet: React.FC<Props> = ({
+  utility,
+}): React.ReactElement => {
   return (
-    <div>
+    <>
       <div className="text-center max-w-[900px] px-8 w-full leading-tight">
         Connect with Amazing community of Artists and developers
       </div>
@@ -70,7 +75,9 @@ const ConnectWithWhalesWallet = (props: Props) => {
 before:w-full before:h-full before:absolute before:border-2 before:border-primaryPurple before:left-1 before:bg-transparent before:z-0 before:top-1 before:rounded-md"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
-          onClick={() => {}}
+          onClick={() => {
+            utility.connectWallet();
+          }}
         >
           <span>Connect Wallet</span>
           <BsArrowRight />
@@ -87,7 +94,7 @@ before:w-full before:h-full before:absolute before:border-2 before:border-primar
           d="M0,192L26.7,165.3C53.3,139,107,85,160,96C213.3,107,267,181,320,208C373.3,235,427,213,480,181.3C533.3,149,587,107,640,90.7C693.3,75,747,85,800,106.7C853.3,128,907,160,960,176C1013.3,192,1067,192,1120,192C1173.3,192,1227,192,1280,192C1333.3,192,1387,192,1413,192L1440,192L1440,320L1413.3,320C1386.7,320,1333,320,1280,320C1226.7,320,1173,320,1120,320C1066.7,320,1013,320,960,320C906.7,320,853,320,800,320C746.7,320,693,320,640,320C586.7,320,533,320,480,320C426.7,320,373,320,320,320C266.7,320,213,320,160,320C106.7,320,53,320,27,320L0,320Z"
         ></path>
       </svg>
-    </div>
+    </>
   );
 };
 

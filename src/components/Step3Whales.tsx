@@ -5,6 +5,7 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { BsArrowRight } from "react-icons/bs";
 import { motion } from "framer-motion";
+import ClaimNFT from "./_claimNft";
 
 type Props = {
   utility: NftValidationUtility;
@@ -20,11 +21,11 @@ type NftFetchResult = {
 const Step3Whales: React.FC<Props> = ({ utility }): React.ReactElement => {
   const [NFTImage, setNFTImage] = useState<string>();
   const [selected, setSelected] = useState<boolean>(false);
-  const [selectedTokenId, setSelectedTokenId] = useState<number | string>();
+  const [selectedTokenId, setSelectedTokenId] = useState<string>();
   console.log(utility, "is the utitlity");
 
-  if (!utility.nfts.nfts[0].attributes) {
-    return <div>You dont own an NFT</div>;
+  if (utility.nfts.nfts.length == 0) {
+    return <ClaimNFT />;
   }
 
   async function fetchNFTMetaData(metaDataURL: string) {
@@ -47,9 +48,10 @@ const Step3Whales: React.FC<Props> = ({ utility }): React.ReactElement => {
   console.log(NFTImage, "is the image");
   return (
     <div className="text-base font-normal flex flex-col items-center gap-4">
-      <h3 className=" text-primaryPurple text-center pb-4">
-        Select the NFT you want to connect with
+      <h3 className=" text-primaryPurple text-center font-bold text-3xl">
+        Your NFTs
       </h3>
+      <p className="pb-4">Choose the one to connect with</p>
       {utility.nfts.nfts.map((nft, k) => {
         fetchNFTMetaData(nft.attributes.tokenUri.gateway);
         return (
@@ -65,7 +67,7 @@ const Step3Whales: React.FC<Props> = ({ utility }): React.ReactElement => {
               setSelectedTokenId(nft.attributes.id.tokenId);
             }}
           >
-            <div className="relative h-[200px] w-[200px] rounded-md bg-primarySky">
+            <div className="relative h-[200px] w-[200px] rounded-md bg-primarySky shadow-md">
               <Image
                 src={NFTImage ? NFTImage : exampleImage}
                 alt="nft_image"
@@ -92,14 +94,15 @@ const Step3Whales: React.FC<Props> = ({ utility }): React.ReactElement => {
                 selectedTokenId &&
                 utility.step != NftValidationUtility.STEP_TOKEN_SELECTED
               )
-                utility
-                  .reserveEngagement()
-                  .then((data) => {
-                    console.log(data);
-                  })
-                  .catch((err) => {
-                    console.log(err);
-                  });
+                utility.tokenId = selectedTokenId;
+              utility
+                .reserveEngagement()
+                .then((data) => {
+                  console.log(data);
+                })
+                .catch((err) => {
+                  console.log(err);
+                });
             }}
           >
             <span>Next Step</span>
