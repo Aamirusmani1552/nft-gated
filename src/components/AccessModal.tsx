@@ -1,14 +1,6 @@
-import React, {
-  ChangeEvent,
-  FC,
-  ReactElement,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { FC, ReactElement, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useAddress } from "@thirdweb-dev/react";
-import { initializeWhales } from "@/helper";
 import Whal3s, { NftValidationUtility } from "@whal3s/whal3s.js";
 
 type Props = {
@@ -22,26 +14,32 @@ const AccessModal: FC<Props> = ({
 }): ReactElement => {
   const modalRef = useRef(null);
   const address = useAddress();
-  const [utility, setUtility] = useState<NftValidationUtility | undefined>(
-    undefined
-  );
   const [step, setStep] = useState<number | undefined>(undefined);
+  const [utility, setUtility] = useState<NftValidationUtility | undefined>();
 
   const init = async () => {
+    if (!address) {
+      return;
+    }
+
     const whal3s = new Whal3s();
     const _utility = await whal3s.createValidationUtility(
-      "bf20e171-09f2-433a-8e29-084f70230fdc"
+      "805ce22c-c3bf-42d0-8e33-2db151302b5c"
     );
     _utility.addEventListener("stepChanged", () => {
+      console.log("step changed to", _utility.step);
       setStep(_utility.step);
     });
-    setStep(_utility.step);
+
+    console.log("current step", _utility.step);
     setUtility(_utility);
+    setStep(_utility.step);
   };
 
   useEffect(() => {
+    if (!address) return;
     init();
-  }, []);
+  }, [address]);
 
   function handleClick(
     e: React.MouseEvent<HTMLElement, globalThis.MouseEvent>
@@ -50,8 +48,6 @@ const AccessModal: FC<Props> = ({
       setShowAccessModal(false);
     }
   }
-
-  console.log(step, "is the step");
 
   return (
     <section
@@ -65,7 +61,21 @@ const AccessModal: FC<Props> = ({
         className="w-full h-[300px] rounded-md bg-white max-w-[700px] shadow-md"
         initial={{ y: "-100vh" }}
         animate={{ y: 0 }}
-      ></motion.div>
+      >
+        <button
+          onClick={() => {
+            if (
+              utility &&
+              utility.step == NftValidationUtility.STEP_INITIALIZED
+            ) {
+              utility.connectWallet();
+            }
+          }}
+          className="bg-primaryPurple py-2 px-4 rounded-md text-white"
+        >
+          Connect wallet
+        </button>
+      </motion.div>
     </section>
   );
 };

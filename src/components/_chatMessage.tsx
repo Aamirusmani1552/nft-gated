@@ -18,7 +18,7 @@ const ChatTextMessage: FC<Props> = ({
   return (
     <div
       className={
-        sentByMe
+        !sentByMe
           ? "bg-background  rounded-lg max-w-[250px] md:max-w-[400px] text-gray-700 text-sm self-start rounded-tl-none w-fit p-4"
           : "bg-primaryPurple text-white text-sm max-w-[250px] md:max-w-[400px] rounded-lg self-end rounded-tr-none w-fit p-4"
       }

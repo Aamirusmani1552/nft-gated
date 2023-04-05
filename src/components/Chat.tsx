@@ -29,6 +29,7 @@ const Chat: FC<Props> = (props): ReactElement => {
   }, [sdkSocket]);
 
   useEffect(() => {
+    if (!address) return;
     if (chats && chats?.length > 0) return;
     getPushChats();
   }, [address]);
@@ -46,7 +47,7 @@ const Chat: FC<Props> = (props): ReactElement => {
   }
 
   if (!chats || chats.length == 0) {
-    return <p>No chats available</p>;
+    return <p className="w-full text-center text-xl ">No chats available</p>;
   }
 
   if (chainId != ChainId.Mumbai) {

@@ -19,9 +19,9 @@ const Header: FC<Props> = (props): ReactElement => {
           <motion.span>nergy</motion.span>
         </div>
       </Link>
-      <div className="w-fit">
+      {/* <div className="w-fit">
         <ConnectWalletButton />
-      </div>
+      </div> */}
     </header>
   );
 };

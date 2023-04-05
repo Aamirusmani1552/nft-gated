@@ -1,17 +1,19 @@
 import Head from "next/head";
 import { Inter } from "next/font/google";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import AccessPage from "@/components/AccessPage";
 import AccessModal from "@/components/AccessModal";
 import Chat from "@/components/Chat";
 import DynamicUtilityComponent from "@/components/DynamicUtility";
+import { useAddress } from "@thirdweb-dev/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  const address = useAddress();
   const [showAccessModal, setShowAccessModal] = useState<boolean>(false);
-  const [hasAccess, setHasAccess] = useState<boolean>(true);
+  const [hasAccess, setHasAccess] = useState<boolean>(false);
 
   return (
     <>
@@ -27,14 +29,14 @@ export default function Home() {
         <Header />
         {!hasAccess ? (
           <>
-            <AccessPage setShowAccessModal={setShowAccessModal} />
-            {showAccessModal && (
+            <DynamicUtilityComponent />
+            {/* {showAccessModal && (
               <DynamicUtilityComponent
                 setShowAccessModal={setShowAccessModal}
                 setHasAccess={setHasAccess}
               />
             )}
-            )
+            ) */}
           </>
         ) : (
           <Chat />

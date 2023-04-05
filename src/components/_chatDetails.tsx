@@ -31,18 +31,17 @@ const ChatDetail: FC<Props> = ({ isChatOpen, latestChats }): ReactElement => {
           >
             {latestChats ? (
               latestChats?.map((i, k) => {
-                console.log(i);
                 return (
                   <ChatTextMessage
                     key={k}
                     message={i.messageContent}
-                    sentByMe={i.fromDID == `eip:155:${address}`}
+                    sentByMe={i.fromDID == `eip155:${address}`}
                     messageType={i.messageType}
                   />
                 );
               })
             ) : (
-              <div className="w-10 h-10 border-4 rounded-full"></div>
+              <div className="w-10  h-10 border-4 rounded-full"></div>
             )}
           </div>
           {latestChats && <NewMessageInput receiver={latestChats[0].toDID} />}

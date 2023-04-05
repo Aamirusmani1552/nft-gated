@@ -47,8 +47,13 @@ export const initializeWhales = async () => {
   const { NftValidationUtility } = await import("@whal3s/whal3s.js");
   const Whal3sClient = new Whal3s();
   const utility = await Whal3sClient.createValidationUtility(
-    "bf20e171-09f2-433a-8e29-084f70230fdc"
+    "805ce22c-c3bf-42d0-8e33-2db151302b5c"
   );
+
+  utility.addEventListener("stepChanged", () => {
+    console.log("step changed to", utility.step);
+  });
+  console.log(utility.step);
 
   return utility;
 };
