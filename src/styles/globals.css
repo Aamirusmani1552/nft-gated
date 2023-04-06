@@ -14,10 +14,10 @@ body {
   overflow-x: hidden;
 }
 
-.no-overflow{
-  max-height: calc(100vh - 148px );
+.no-overflow {
+  max-height: calc(100vh - 148px);
 }
 
-.last-item:last-child{
+.last-item:last-child {
   border-bottom: none;
 }

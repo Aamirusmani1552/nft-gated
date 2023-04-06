@@ -37,6 +37,7 @@ const ClaimNFT = (props: Props) => {
           try {
             await contract?.call("mintAccessNFT", address);
             alert("successfully claimed");
+            typeof window != undefined && location.reload();
           } catch (err) {
             alert(err);
           }

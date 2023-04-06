@@ -9,6 +9,7 @@ import {
   safeWallet,
   paperWallet,
 } from "@thirdweb-dev/react";
+import { useEffect } from "react";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (

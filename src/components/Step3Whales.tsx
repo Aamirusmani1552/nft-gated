@@ -6,6 +6,7 @@ import React, { useState } from "react";
 import { BsArrowRight } from "react-icons/bs";
 import { motion } from "framer-motion";
 import ClaimNFT from "./_claimNft";
+import Loader from "./Loader";
 
 type Props = {
   utility: NftValidationUtility;
@@ -24,7 +25,15 @@ const Step3Whales: React.FC<Props> = ({ utility }): React.ReactElement => {
   const [selectedTokenId, setSelectedTokenId] = useState<string>();
   console.log(utility, "is the utitlity");
 
-  if (utility.nfts.nfts?.[0].valid == false) {
+  if (!utility) {
+    return (
+      <div className="w-full flex-1 z-10 font-semibold text-4xl md:text-5xl flex flex-col items-center justify-center gap-4 relative">
+        <Loader />
+      </div>
+    );
+  }
+
+  if (!utility.nfts.nfts) {
     return <ClaimNFT />;
   }
 
@@ -53,6 +62,7 @@ const Step3Whales: React.FC<Props> = ({ utility }): React.ReactElement => {
       </h3>
       <p className="pb-4">Choose the one to connect with</p>
       {utility.nfts.nfts.map((nft, k) => {
+        console.log(utility.nfts.nfts);
         fetchNFTMetaData(nft.attributes.tokenUri.gateway);
         return (
           <div

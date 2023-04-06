@@ -40,16 +40,16 @@ const useSendPushMessage = () => {
         user = JSON.parse(userString) as IUser;
       } else {
         await pushUser();
-        user = JSON.parse(await getLocalStorage("push_user")) as IUser;
+        console.log("pushing user");
+        user = (await JSON.parse(await getLocalStorage("push_user"))) as IUser;
       }
-      console.log(user);
 
       //   // getting decrypted key
-      const decryptedPvtKey = JSON.parse(
+      const decryptedPvtKey = await JSON.parse(
         await getLocalStorage("push_user_private")
       );
 
-      console.log(decryptedPvtKey);
+      console.log();
 
       const response = await PushAPI.chat.send({
         messageContent: message,
@@ -58,10 +58,12 @@ const useSendPushMessage = () => {
         signer,
         pgpPrivateKey: decryptedPvtKey,
         env: ENV.STAGING,
+        account: `eip155:${address}`,
       });
 
       console.log(response);
     } catch (error) {
+      console.log(error);
       const err = error as Error;
       alert(err.message);
       return;

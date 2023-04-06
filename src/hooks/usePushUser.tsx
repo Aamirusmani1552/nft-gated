@@ -35,6 +35,8 @@ const usePushUser = () => {
         env: ENV.STAGING,
       });
 
+      console.log(user, "is the user");
+
       if (!user) {
         console.log("no user exists");
         console.log("creating new user...");
