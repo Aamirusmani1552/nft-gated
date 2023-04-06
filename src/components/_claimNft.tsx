@@ -24,7 +24,7 @@ const ClaimNFT = (props: Props) => {
         />
       </div>
       <h3 className="text-lg md:text-xl text-center max-w-[300px] md:max-w-full">
-        You don't seem to have an Access Pass. Claim here &#128071;
+        You dont seem to have an Access Pass. Claim here &#128071;
       </h3>
       <motion.button
         className=" bg-primaryPurple text-white px-4 py-2 font-normal tracking-wider text-lg rounded-md border-none outline-none relative mt-2 flex gap-2 items-center justify-center before:w-full before:h-full before:absolute before:border-2 before:border-primaryPurple before:left-1 before:bg-transparent before:z-0 before:top-1 before:rounded-md disabled:cursor-not-allowed"

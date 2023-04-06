@@ -43,8 +43,9 @@ function usePushSocket() {
   };
 
   useEffect(() => {
+    if (!address) return;
     const connectionObject = createSocketConnection({
-      user: `eip155:${ChainId.Mumbai}:${address}`,
+      user: `eip155:${address}`,
       env: ENV.STAGING,
       socketOptions: { autoConnect: false, reconnectionAttempts: 3 },
       socketType: "chat",
@@ -57,7 +58,7 @@ function usePushSocket() {
         sdkSocket.disconnect();
       }
     };
-  }, []);
+  }, [address]);
 
   return {
     sdkSocket,

@@ -10,8 +10,8 @@ type Props = {
 const Step5Whales: FC<Props> = ({ utility }): ReactElement => {
   const [loading, setLoading] = useState<boolean>(false);
   return (
-    <div className="flex flex-col items-center mb-12">
-      <div className="relative w-[300px] md:w-[500px] h-[300px] md:h-[500px] rounded-lg overflow-hidden">
+    <div className="flex flex-col items-center ">
+      <div className="relative w-[300px] md:w-[400px] h-[300px] md:h-[400px] rounded-lg overflow-hidden">
         <Image
           src={welcomeImage}
           alt="no access"
