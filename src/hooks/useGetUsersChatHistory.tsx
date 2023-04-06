@@ -60,7 +60,7 @@ const useGetUsersChatHistory = () => {
     }
   }
 
-  return { getchatHistory, chatHistory };
+  return { getchatHistory, chatHistory, setChatsHistory };
 };
 
 export default useGetUsersChatHistory;

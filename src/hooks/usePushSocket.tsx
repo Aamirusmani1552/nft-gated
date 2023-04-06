@@ -2,12 +2,13 @@ import { useState, useEffect } from "react";
 import { createSocketConnection, EVENTS } from "@pushprotocol/socket";
 import { ENV } from "@pushprotocol/socket/src/lib/constants";
 import { ChainId } from "@thirdweb-dev/sdk";
-import { IFeeds } from "@pushprotocol/restapi";
+import { IFeeds, IMessageIPFS } from "@pushprotocol/restapi";
 import { useAddress } from "@thirdweb-dev/react";
 
 function usePushSocket() {
   const [sdkSocket, setSDKSocket] = useState<any>(null);
   const [isConnected, setIsConnected] = useState(sdkSocket?.connected);
+  const [newMessage, setNewMessage] = useState<IMessageIPFS>();
   const address = useAddress();
 
   const addSocketEvents = () => {
@@ -22,9 +23,10 @@ function usePushSocket() {
       setIsConnected(false);
     });
 
-    sdkSocket?.on(EVENTS.CHAT_RECEIVED_MESSAGE, (message: IFeeds) =>
-      console.log(message)
-    );
+    sdkSocket?.on(EVENTS.CHAT_RECEIVED_MESSAGE, (message: IMessageIPFS) => {
+      console.log(message);
+      setNewMessage(message);
+    });
 
     console.log("events added");
   };
@@ -47,7 +49,7 @@ function usePushSocket() {
     const connectionObject = createSocketConnection({
       user: `eip155:${address}`,
       env: ENV.STAGING,
-      socketOptions: { autoConnect: false, reconnectionAttempts: 3 },
+      socketOptions: { autoConnect: true, reconnectionAttempts: 3 },
       socketType: "chat",
     });
 
@@ -66,6 +68,7 @@ function usePushSocket() {
     addSocketEvents,
     toggleConnection,
     isConnected,
+    newMessage,
   };
 }
 

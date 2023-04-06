@@ -5,10 +5,14 @@ import NewMessageInput from "./_createNewMessage";
 import chatImage from "../../public/4112338.jpg";
 import { IMessageIPFS } from "@pushprotocol/restapi";
 import { useAddress } from "@thirdweb-dev/react";
+import * as PushAPI from "@pushprotocol/restapi";
 
 type Props = {
   isChatOpen: boolean;
   latestChats: IMessageIPFS[] | undefined;
+  setChatsHistory: React.Dispatch<
+    React.SetStateAction<PushAPI.IMessageIPFS[] | undefined>
+  >;
 };
 
 const ChatDetail: FC<Props> = ({ isChatOpen, latestChats }): ReactElement => {

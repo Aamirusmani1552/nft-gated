@@ -14,10 +14,16 @@ const Chat: FC<Props> = (props): ReactElement => {
   const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
   const [activeChat, setActiveChat] = useState<string>("");
   const { getPushChats, chats } = useGetPushChats();
-  const { getchatHistory, chatHistory } = useGetUsersChatHistory();
+  const { getchatHistory, chatHistory, setChatsHistory } =
+    useGetUsersChatHistory();
   const chainId = useChainId();
-  const { sdkSocket, addSocketEvents, removeSocketEvents, isConnected } =
-    usePushSocket();
+  const {
+    sdkSocket,
+    addSocketEvents,
+    removeSocketEvents,
+    isConnected,
+    newMessage,
+  } = usePushSocket();
 
   useEffect(() => {
     if (sdkSocket) {
@@ -40,6 +46,15 @@ const Chat: FC<Props> = (props): ReactElement => {
     }
   }, [activeChat]);
 
+  useEffect(() => {
+    if (!newMessage) return;
+    console.log("i am in here");
+    let oldChats = chatHistory;
+    oldChats?.push(newMessage);
+    setChatsHistory(oldChats);
+  }, [newMessage]);
+  console.log(newMessage, "is the new message recieved");
+
   if (!address) {
     return (
       <p className="w-full text-center text-xl ">Please connect wallet first</p>
@@ -58,9 +73,6 @@ const Chat: FC<Props> = (props): ReactElement => {
     );
   }
 
-  console.log(isConnected, "is the status");
-  console.log(sdkSocket);
-
   return (
     <>
       {address && (
@@ -78,7 +90,11 @@ const Chat: FC<Props> = (props): ReactElement => {
               );
             })}
           </div>
-          <ChatDetail isChatOpen={isChatOpen} latestChats={chatHistory} />
+          <ChatDetail
+            isChatOpen={isChatOpen}
+            latestChats={chatHistory}
+            setChatsHistory={setChatsHistory}
+          />
         </section>
       )}
     </>

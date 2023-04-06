@@ -24,7 +24,7 @@ const Step3Whales: React.FC<Props> = ({ utility }): React.ReactElement => {
   const [selectedTokenId, setSelectedTokenId] = useState<string>();
   console.log(utility, "is the utitlity");
 
-  if (utility.nfts.nfts.length == 0) {
+  if (utility.nfts.nfts?.[0].valid == false) {
     return <ClaimNFT />;
   }
 

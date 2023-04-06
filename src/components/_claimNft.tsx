@@ -15,7 +15,7 @@ const ClaimNFT = (props: Props) => {
 
   return (
     <div className="flex flex-col items-center">
-      <div className="relative w-[250px] md:w-[400px] h-[250px] md:h-[400px] rounded-lg overflow-hidden">
+      <div className="relative w-[250px] md:w-[300px] h-[250px] md:h-[300px] rounded-lg overflow-hidden">
         <Image
           src={NotAccessImage}
           alt="no access"
