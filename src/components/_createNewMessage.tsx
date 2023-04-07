@@ -28,8 +28,10 @@ const NewMessageInput: FC<Props> = ({
   const [file, setFile] = useState<File>();
   const [imagePreview, setImagePreview] = useState<string>();
   const { mutateAsync: uploadToIpfs } = useStorageUpload();
+  const [loading, setLoading] = useState<boolean>(false);
 
   async function handleSendText() {
+    setLoading(true);
     if (textMessage.length > 0 || image || file) {
       let ipfsUrl;
       if (image || file) {
@@ -64,6 +66,7 @@ const NewMessageInput: FC<Props> = ({
       }
 
       setTextMessage("");
+      setLoading(false);
     }
   }
 
@@ -95,6 +98,7 @@ const NewMessageInput: FC<Props> = ({
               <span
                 className="cursor-pointer text-2xl"
                 onClick={() => {
+                  if (loading) return;
                   setImage(undefined);
                   setFile(undefined);
                 }}
@@ -110,6 +114,12 @@ const NewMessageInput: FC<Props> = ({
                 fill
                 style={{ objectFit: "contain" }}
               />
+              {loading && (
+                <div className="w-full h-full backdrop-blur-sm absolute top-0 left-0 flex flex-col gap-2 items-center justify-center">
+                  <div className="w-8 h-8 border-4 border-b-transparent border-gray-500 animate-spin rounded-full"></div>
+                  <span>Sending</span>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -118,16 +128,15 @@ const NewMessageInput: FC<Props> = ({
             type="text"
             name="new-message"
             id="new-message"
-            className="bg-background outline-none border-none placeholder:text-gray-500 flex-1"
+            className="bg-background disabled:opacity-70 outline-none border-none placeholder:text-gray-500 flex-1"
             placeholder="type a message"
             value={textMessage}
+            disabled={loading}
             onChange={(e) => {
               setTextMessage(e.target.value);
             }}
             onKeyDown={(e) => {
-              console.log("i am pressed");
               if (e.key == "Enter") {
-                console.log("i am here");
                 handleSendText();
               }
             }}
@@ -138,12 +147,18 @@ const NewMessageInput: FC<Props> = ({
             <span
               className="cursor-pointer text-xl"
               onClick={() => {
+                if (loading) return;
                 setImage(undefined);
                 setFile(undefined);
               }}
             >
               <RxCross2 />
             </span>
+            {loading && (
+              <div className="w-full h-full backdrop-blur-sm absolute top-0 left-0 flex items-center justify-center">
+                <span>Sending...</span>
+              </div>
+            )}
           </div>
         )}
 
@@ -152,6 +167,7 @@ const NewMessageInput: FC<Props> = ({
             className="text-xl text-gray-500 pr-2 cursor-pointer relative"
             onClick={(e) => {
               e.stopPropagation();
+              if (loading) return;
               setIsOpenPicker((prev) => !prev);
             }}
           >
@@ -174,6 +190,7 @@ const NewMessageInput: FC<Props> = ({
                 type="file"
                 name="message_file"
                 id="message_file"
+                disabled={loading}
                 onChange={(e) => {
                   if (e.target.files) {
                     setFile(e.target.files[0]);
@@ -193,9 +210,8 @@ const NewMessageInput: FC<Props> = ({
                 type="file"
                 name="message_image"
                 id="message_image"
+                disabled={loading}
                 onChange={(e) => {
-                  console.log("i ran");
-                  console.log(e.target.files);
                   if (e.target.files) {
                     setImage(e.target.files[0]);
                     setIsOpenPicker(false);
@@ -214,9 +230,10 @@ const NewMessageInput: FC<Props> = ({
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         onClick={() => {
+          if (loading) return;
           handleSendText();
         }}
-        className="text-white outline-none bg-primarySky w-12 h-12 flex items-center justify-center rounded-full"
+        className="text-white outline-none disabled:opacity-75 bg-primarySky w-12 h-12 flex items-center justify-center rounded-full"
       >
         <IoSend />
       </motion.button>

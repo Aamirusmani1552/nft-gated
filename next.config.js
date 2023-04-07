@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images:{
-    domains: ["alchemy.mypinata.cloud"]
+    domains: ["alchemy.mypinata.cloud","upload.wikimedia.org"]
   }
 }
 

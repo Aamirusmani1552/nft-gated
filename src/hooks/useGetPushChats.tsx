@@ -5,6 +5,7 @@ import usePushUser from "./usePushUser";
 import * as PushAPI from "@pushprotocol/restapi";
 import { ENV } from "@pushprotocol/restapi/src/lib/constants";
 import { IFeeds, IUser } from "@pushprotocol/restapi";
+import { toast } from "react-hot-toast";
 
 const useGetPushChats = () => {
   const address = useAddress();
@@ -45,7 +46,7 @@ const useGetPushChats = () => {
       console.log(chats);
     } catch (error) {
       const err = error as Error;
-      alert(err.message);
+      toast.error(err.name);
       return;
     }
   }

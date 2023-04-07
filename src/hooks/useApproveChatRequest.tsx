@@ -2,6 +2,7 @@ import { getEthereumSigner } from "@/helper";
 import { useAddress } from "@thirdweb-dev/react";
 import * as PushAPI from "@pushprotocol/restapi";
 import { ENV } from "@pushprotocol/restapi/src/lib/constants";
+import { toast } from "react-hot-toast";
 
 const useApproveChateRequest = () => {
   const address = useAddress();
@@ -24,10 +25,10 @@ const useApproveChateRequest = () => {
         signer: signer,
       });
 
-      console.log(response);
+      toast.success("Approved, please refresh or come back later");
     } catch (error) {
       const err = error as Error;
-      alert(err.message);
+      toast.error(err.name);
       return;
     }
   }

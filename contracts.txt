@@ -1,0 +1,157 @@
+// SPDX-License-Identifier: MIT
+pragma solidity ^0.8.9;
+
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
+
+contract File is ERC721, Ownable {
+    using Counters for Counters.Counter;
+
+    Counters.Counter private _tokenIdCounter;
+    string private s_tokenURI;
+    
+    constructor(string memory nftName,string memory nftSymbol,string memory _tokenURI) ERC721(nftName, nftSymbol) {
+        s_tokenURI = _tokenURI;
+    }
+
+    function mintFileNFT(address to) public  {
+        uint256 tokenId = _tokenIdCounter.current();
+        _tokenIdCounter.increment();
+        _safeMint(to, tokenId);
+    }
+
+    function tokenURI(uint256 tokenId) public view virtual override returns (string memory){
+        _requireMinted(tokenId);
+
+        return s_tokenURI;
+    }
+}
+
+
+
+//SPDX-License-Identifier: MIT
+
+pragma solidity ^0.8.17;
+
+import {StringUtils} from "./StringUtils.sol";
+import {File} from "./NFT.sol";
+
+error SynergyGallery_InvalidIpfsHash();
+error SynergyGallery_InvalidOwner();
+error SynergyGallery_InvalidFileId();
+
+contract SynergyGallery{
+    using StringUtils for string;
+
+    struct NFT{
+        address owner;
+        string metadata;
+        address NFTAddress;
+    }
+
+    address private immutable i_owner;
+    uint256 private s_totalFilesAdded = 0;
+    mapping(uint256=>NFT) private s_files;
+    string[] private s_allNFTTokens;
+
+    event NewFileAdded(address indexed owner,string indexed metadataIpfsHash, address indexed NFTAddress);
+    event FileNFTMinted( address receiver,address nftAddress, uint256 fileId);
+
+    constructor(){
+        i_owner = msg.sender;
+    }
+
+    function addNFTFile(string memory metadataIpfsHash, address owner, address NFTAddress) public  {
+        if(metadataIpfsHash.strlen() == 0){
+            revert SynergyGallery_InvalidIpfsHash();
+        }
+
+        if(owner == address(0)){
+            revert SynergyGallery_InvalidOwner();
+        }
+
+
+        NFT memory newNFT = NFT({
+            owner: owner,
+            metadata: metadataIpfsHash,
+            NFTAddress: NFTAddress
+        });
+
+        s_files[++s_totalFilesAdded] = newNFT;
+        s_allNFTTokens.push(metadataIpfsHash);
+        
+        emit NewFileAdded(owner, metadataIpfsHash, NFTAddress);
+    }
+
+
+    function mintNFTFile(uint256 fileId, address receiver) public {
+        if(fileId > s_totalFilesAdded){
+            revert SynergyGallery_InvalidFileId();
+        }
+
+        if(receiver == address(0)){
+            revert SynergyGallery_InvalidOwner();
+        }
+
+        NFT memory nftFile = s_files[fileId];
+
+        File(nftFile.NFTAddress).mintFileNFT(receiver);
+        emit FileNFTMinted( receiver, nftFile.NFTAddress, fileId);
+    }
+    
+
+    ////////////////////
+    ///// GETTERS //////
+    ////////////////////
+
+    function getNFTFile(uint256 fileId) public view returns (NFT memory){
+        if(fileId > s_totalFilesAdded){
+            revert SynergyGallery_InvalidFileId();
+        }
+        return s_files[fileId];
+    }
+
+    function getCurrentFileId() public view returns(uint256){
+        return s_totalFilesAdded + 1;
+    }
+
+    function nftFiles() public view returns(string[] memory){
+        return s_allNFTTokens;
+    }
+}
+
+// SPDX-License-Identifier: MIT
+// Source:
+// https://github.com/ensdomains/ens-contracts/blob/master/contracts/ethregistrar/StringUtils.sol
+pragma solidity >=0.8.4;
+library StringUtils {
+    /**
+     * @dev Returns the length of a given string
+     *
+     * @param s The string to measure the length of
+     * @return The length of the input string
+     */
+    function strlen(string memory s) internal pure returns (uint256) {
+        uint256 len;
+        uint256 i = 0;
+        uint256 bytelength = bytes(s).length;
+        for (len = 0; i < bytelength; len++) {
+            bytes1 b = bytes(s)[i];
+            if (b < 0x80) {
+                i += 1;
+            } else if (b < 0xE0) {
+                i += 2;
+            } else if (b < 0xF0) {
+                i += 3;
+            } else if (b < 0xF8) {
+                i += 4;
+            } else if (b < 0xFC) {
+                i += 5;
+            } else {
+                i += 6;
+            }
+        }
+        return len;
+    }
+}

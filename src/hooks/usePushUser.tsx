@@ -37,7 +37,7 @@ const usePushUser = () => {
 
       console.log(user, "is the user");
 
-      if (!user) {
+      if (user.encryptedPrivateKey == "") {
         console.log("no user exists");
         console.log("creating new user...");
         // generating new key if not exist and retreiving it

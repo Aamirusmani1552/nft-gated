@@ -1,24 +1,51 @@
-import React, { FC, ReactElement, useState } from "react";
+import React, { FC, ReactElement, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
+import { useAddress } from "@thirdweb-dev/react";
+import Whal3s, { NftValidationUtility } from "@whal3s/whal3s.js";
 import useSendPushMessage from "@/hooks/useSendPushMessage";
 import { toast } from "react-hot-toast";
 
-type Props = {};
+type Props = {
+  setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-const NoChat: FC<Props> = (props): ReactElement => {
-  const [receiverAddress, setReceiverAddress] = useState<string>();
-  const [message, setMessage] = useState<string>();
+const NewChatModal: FC<Props> = ({ setShowModal }): ReactElement => {
+  const modalRef = useRef(null);
+  const address = useAddress();
+  const [receiverAddress, setReceiverAddress] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
   const { sendPushMessage } = useSendPushMessage();
   const [loading, setLoading] = useState<boolean>(false);
 
-  return (
-    <section className="flex items-center flex-col justify-center flex-1 px-8">
-      <div className="shadow-md w-full max-w-[600px] p-8 bg-white rounded-lg flex flex-col items-center gap-4">
-        <h3 className="text-xl md:text-3xl font-semibold text-gray-700">
-          You have No Chats
-        </h3>
-        <p className="text-xs pb-4 mb-2">Send message request to an Address</p>
+  function handleClick(
+    e: React.MouseEvent<HTMLElement, globalThis.MouseEvent>
+  ) {
+    console.log(e.target != modalRef.current, "is our result of camparison");
+    console.log(e.target, modalRef.current);
+    if (e.target != modalRef.current) {
+      setShowModal(false);
+    }
+  }
 
+  return (
+    <section
+      onClick={(e) => {
+        handleClick(e);
+      }}
+      className="w-screen px-8 h-screen flex items-center bg-[#505355c3] justify-center fixed top-0 z-20  backdrop-blur-sm"
+    >
+      <motion.div
+        ref={modalRef}
+        className="w-full py-4 px-4 rounded-md bg-white max-w-[600px] shadow-md"
+        initial={{ y: "-100vh" }}
+        animate={{ y: 0 }}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
+        <h3 className="text-xl font-semibold pb-8 text-gray-700 text-center">
+          Send Request An Address
+        </h3>
         <div className="w-full flex flex-col items-center gap-4">
           <label
             htmlFor="new_chat"
@@ -92,9 +119,9 @@ const NoChat: FC<Props> = (props): ReactElement => {
             </motion.button>
           </div>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };
 
-export default NoChat;
+export default NewChatModal;

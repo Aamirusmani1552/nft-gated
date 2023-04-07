@@ -8,6 +8,8 @@ import ChatDetail from "./_chatDetails";
 import NoChat from "./NoChat";
 import RequestCard from "./_requestCard";
 import { IFeeds } from "@pushprotocol/restapi";
+import { IoMdAdd } from "react-icons/io";
+import NewChatModal from "./NewChatModal";
 
 type Props = {};
 enum Tabs {
@@ -23,6 +25,7 @@ const Chat: FC<Props> = (props): ReactElement => {
   const [activeTab, setActiveTab] = useState<Tabs>(Tabs.CHATS);
   const { getPushChats, chats } = useGetPushChats();
   const { chatRequests, getPushChatRequests } = useGetPushChatRequest();
+  const [showModal, setShowModal] = useState<boolean>(false);
   const chainId = useChainId();
   const {
     sdkSocket,
@@ -79,67 +82,78 @@ const Chat: FC<Props> = (props): ReactElement => {
   return (
     <>
       {address && (
-        <section className="flex px-8 py-2 gap-8 flex-1">
+        <section className="flex flex-col items-center px-4 py-2 gap-8 flex-1">
           {!activeChat ? (
-            <div className="w-[300px] shadow-sm px-4 py-2 flex flex-col gap-2 rounded-lg h-fit bg-white">
-              <div className="flex items-center justify-between text-sm py-2">
-                <span
-                  className={
-                    activeTab == Tabs.CHATS
-                      ? "text-center block flex-1 border-b-[3px] border-primaryPurple pb-2 cursor-pointer"
-                      : "text-center block flex-1 pb-2 cursor-pointer border-b-[3px] border-transparent"
-                  }
-                  onClick={() => {
-                    if (activeTab == Tabs.CHATS) return;
-                    console.log("i ran");
-                    setActiveTab(Tabs.CHATS);
-                  }}
+            <>
+              <div className="flex justify-end w-full max-w-[500px]">
+                <button
+                  className="flex items-center gap-2 bg-primaryPurple text-white rounded-md px-4 py-2 text-sm "
+                  onClick={() => setShowModal(true)}
                 >
-                  Chats
-                </span>
-                <span
-                  className={
-                    activeTab == Tabs.REQUESTS
-                      ? "text-center block flex-1 border-b-[3px] border-primaryPurple pb-2 cursor-pointer"
-                      : "text-center block flex-1 pb-2 cursor-pointer border-b-[3px] border-transparent"
-                  }
-                  onClick={() => {
-                    if (activeTab == Tabs.REQUESTS) return;
-                    console.log("i ran");
-                    setActiveTab(Tabs.REQUESTS);
-                    console.log("i am here now");
-                  }}
-                >
-                  Requests
-                </span>
+                  <span>New</span>
+                  <IoMdAdd />
+                </button>
               </div>
-              {activeTab == Tabs.CHATS && chats && chats?.length > 0 ? (
-                chats?.map((i, k) => {
-                  return (
-                    <ChatCard
-                      key={k}
-                      details={i}
-                      setIsChatOpen={setIsChatOpen}
-                      setActiveChat={setActiveChat}
-                      activeChat={activeChat}
-                      setActiveChatData={setActiveChatData}
-                    />
-                  );
-                })
-              ) : activeTab == Tabs.REQUESTS &&
-                chatRequests &&
-                chatRequests?.length > 0 ? (
-                chatRequests?.map((i, k) => {
-                  return <RequestCard key={k} details={i} />;
-                })
-              ) : (
-                <div className="py-4 text-xs text-gray-500 text-center">
-                  {activeTab == Tabs.CHATS
-                    ? "No Active Chat"
-                    : "No Active Request"}
+              <div className="w-full max-h-[600px] max-w-[500px] shadow-sm px-4 relative py-2 flex flex-col gap-2 rounded-lg h-fit bg-white">
+                <div className="flex items-center justify-between text-sm py-2">
+                  <span
+                    className={
+                      activeTab == Tabs.CHATS
+                        ? "text-center block flex-1 border-b-[3px] border-primaryPurple pb-2 cursor-pointer"
+                        : "text-center block flex-1 pb-2 cursor-pointer border-b-[3px] border-transparent"
+                    }
+                    onClick={() => {
+                      if (activeTab == Tabs.CHATS) return;
+                      console.log("i ran");
+                      setActiveTab(Tabs.CHATS);
+                    }}
+                  >
+                    Chats
+                  </span>
+                  <span
+                    className={
+                      activeTab == Tabs.REQUESTS
+                        ? "text-center block flex-1 border-b-[3px] border-primaryPurple pb-2 cursor-pointer"
+                        : "text-center block flex-1 pb-2 cursor-pointer border-b-[3px] border-transparent"
+                    }
+                    onClick={() => {
+                      if (activeTab == Tabs.REQUESTS) return;
+                      console.log("i ran");
+                      setActiveTab(Tabs.REQUESTS);
+                      console.log("i am here now");
+                    }}
+                  >
+                    Requests
+                  </span>
                 </div>
-              )}
-            </div>
+                {activeTab == Tabs.CHATS && chats && chats?.length > 0 ? (
+                  chats?.map((i, k) => {
+                    return (
+                      <ChatCard
+                        key={k}
+                        details={i}
+                        setIsChatOpen={setIsChatOpen}
+                        setActiveChat={setActiveChat}
+                        activeChat={activeChat}
+                        setActiveChatData={setActiveChatData}
+                      />
+                    );
+                  })
+                ) : activeTab == Tabs.REQUESTS &&
+                  chatRequests &&
+                  chatRequests?.length > 0 ? (
+                  chatRequests?.map((i, k) => {
+                    return <RequestCard key={k} details={i} />;
+                  })
+                ) : (
+                  <div className="py-4 text-xs text-gray-500 text-center">
+                    {activeTab == Tabs.CHATS
+                      ? "No Active Chat"
+                      : "No Active Request"}
+                  </div>
+                )}
+              </div>
+            </>
           ) : (
             <ChatDetail
               isChatOpen={isChatOpen}
@@ -150,6 +164,7 @@ const Chat: FC<Props> = (props): ReactElement => {
               setActiveChat={setActiveChat}
             />
           )}
+          {showModal && <NewChatModal setShowModal={setShowModal} />}
         </section>
       )}
     </>

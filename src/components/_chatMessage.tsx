@@ -39,6 +39,10 @@ const ChatTextMessage: FC<Props> = ({
           ? "File.pdf"
           : type.startsWith("application/json")
           ? "File.json"
+          : type.startsWith(
+              "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            )
+          ? "Download.docx"
           : "File";
         fileDownload(data.data, fileName);
       })

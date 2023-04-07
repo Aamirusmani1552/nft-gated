@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Chat from "@/components/Chat";
 import DynamicUtilityComponent from "@/components/DynamicUtility";
 import { useAddress } from "@thirdweb-dev/react";
+import { Toaster } from "react-hot-toast";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -38,6 +39,7 @@ export default function Home() {
             </h3>
           </div>
         )}
+        <Toaster />
       </main>
     </>
   );

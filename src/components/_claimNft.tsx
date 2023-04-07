@@ -1,17 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import NotAccessImage from "../../public/Tiny_people_standing_near_stop_sign_flat_vector_illustration-removebg-preview.png";
 import { useAddress, useContract } from "@thirdweb-dev/react";
+import { toast } from "react-hot-toast";
 
 type Props = {};
 
 const ClaimNFT = (props: Props) => {
   const address = useAddress();
   const [loading, setLoading] = useState<boolean>(false);
+  const [claimed, setClaimed] = useState<string>("-");
   const { contract, data } = useContract(
     "0x7e4Ea0A7Cb44ef7Cb9f9af67fF7ad27900af5429"
   );
+
+  async function getClaimed() {
+    if (!contract) return;
+    const token = await contract.call<string>("getCurrentTokenId");
+    setClaimed(token);
+  }
+
+  useEffect(() => {
+    if (!contract) return;
+    getClaimed();
+  }, []);
 
   return (
     <div className="flex flex-col items-center">
@@ -36,10 +49,10 @@ const ClaimNFT = (props: Props) => {
           setLoading(true);
           try {
             await contract?.call("mintAccessNFT", address);
-            alert("successfully claimed");
+            toast.success("Successfully claimed");
             typeof window != undefined && location.reload();
           } catch (err) {
-            alert(err);
+            toast.error("An error occured while claiming");
           }
           setLoading(false);
         }}
@@ -49,6 +62,9 @@ const ClaimNFT = (props: Props) => {
           <span className="block h-4 w-4 border-2 rounded-full border-b-transparent animate-spin"></span>
         )}
       </motion.button>
+      <span className="text-sm py-4 text-primaryPurple">
+        {claimed} / 500 claimed
+      </span>
     </div>
   );
 };

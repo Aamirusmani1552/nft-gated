@@ -5,6 +5,7 @@ import usePushUser from "./usePushUser";
 import * as PushAPI from "@pushprotocol/restapi";
 import { getEthereumSigner } from "@/helper";
 import { ENV } from "@pushprotocol/restapi/src/lib/constants";
+import { toast } from "react-hot-toast";
 
 interface SendMessageParams {
   message: string;
@@ -65,7 +66,7 @@ const useSendPushMessage = () => {
     } catch (error) {
       console.log(error);
       const err = error as Error;
-      alert(err.message);
+      toast.error(err.name);
       return;
     }
   }

@@ -4,14 +4,17 @@ import React, { FC, ReactElement } from "react";
 import exampleImage from "../../public/nature.png";
 import dateFormat, { masks } from "dateformat";
 import { TiTick } from "react-icons/ti";
+import { BsCheckLg } from "react-icons/bs";
+import useApproveChateRequest from "@/hooks/useApproveChatRequest";
 
 type Props = {
   details: IFeeds;
 };
 
 const RequestCard: FC<Props> = ({ details }): ReactElement => {
+  const { approveChatRequest } = useApproveChateRequest();
   return (
-    <div className="bg-white border-b-[1px] border-gray-100 flex items-center gap-2 py-2 cursor-pointer last-item">
+    <div className="bg-white border-b-[1px] border-gray-100 flex items-center gap-2 py-2  cursor-pointer last-item">
       <div className="relative w-12 h-12 rounded-full ">
         <Image
           src={details.profilePicture ? details.profilePicture : exampleImage}
@@ -34,8 +37,14 @@ const RequestCard: FC<Props> = ({ details }): ReactElement => {
               details.did.replace("eip155:", "").slice(-5)}
           </span>
           <span className="text-xs text-gray-500">
-            {typeof window != undefined &&
-              dateFormat(new Date(details.intentTimestamp), "hh:MM")}
+            <p
+              className="w-8 h-8 rounded-full bg-primarySky text-white flex items-center justify-center"
+              onClick={() => {
+                approveChatRequest(details.did.replace("eip155:", ""));
+              }}
+            >
+              <BsCheckLg />
+            </p>
           </span>
         </span>
         <span className="truncate text-xs text-gray-500">

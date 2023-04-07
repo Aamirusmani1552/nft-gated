@@ -5,6 +5,7 @@ import { ENV } from "@pushprotocol/restapi/src/lib/constants";
 import useLocalStorage from "./useLocalStorage";
 import usePushUser from "./usePushUser";
 import { IMessageIPFS, IUser } from "@pushprotocol/restapi";
+import { toast } from "react-hot-toast";
 
 const useDecryptSingleChat = () => {
   const address = useAddress();
@@ -48,7 +49,7 @@ const useDecryptSingleChat = () => {
       return decryptedChat[0];
     } catch (error) {
       const err = error as Error;
-      alert(err.message);
+      toast.error(err.name);
       return;
     }
   }

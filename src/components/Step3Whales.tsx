@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import ClaimNFT from "./_claimNft";
 import Loader from "./Loader";
 import { WalletNftValidationResponse } from "@whal3s/whal3s.js/build/types/types/types-internal";
+import { useAddress, useContract } from "@thirdweb-dev/react";
 
 type Props = {
   utility: NftValidationUtility;
@@ -29,12 +30,33 @@ const Step3Whales: React.FC<Props> = ({
   const [selected, setSelected] = useState<boolean>(false);
   const [selectedTokenId, setSelectedTokenId] = useState<string>();
   const [hasNFT, setHasNFT] = useState<boolean>(false);
+  const [userHasNFT, setUserHasNFT] = useState<boolean>(false);
   const [NFTs, setNFTs] = useState<WalletNftValidationResponse>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const { contract, data } = useContract(
+    "0x7e4Ea0A7Cb44ef7Cb9f9af67fF7ad27900af5429"
+  );
+  const address = useAddress();
 
-  console.log(utility.nfts.nfts, "is the utitlity");
+  async function checkAccess() {
+    let total = await contract?.call("balanceOf", address);
+    console.log(Number(total), "is your nft count");
+    if (Number(total) > 0) {
+      setUserHasNFT(true);
+      setIsLoading(false);
+      return;
+    }
+    setIsLoading(false);
+    setUserHasNFT(false);
+  }
 
   useEffect(() => {
-    if (utility.nfts.nfts && utility.nfts.error.length == 0) return;
+    if (!address || !contract) return;
+    checkAccess();
+  }, [contract, address]);
+
+  useEffect(() => {
+    if (utility && utility.nfts.nfts.length > 0 && userHasNFT) return;
     let intervalId;
     setHasNFT(true);
     if (
@@ -46,9 +68,7 @@ const Step3Whales: React.FC<Props> = ({
         setNFTs(utility.nfts);
       }, 2000);
     }
-  }, [step, hasNFT, utility.nfts.nfts]);
-
-  console.log(hasNFT, utility.nfts.nfts, "is the result");
+  }, [step, hasNFT, utility.nfts.nfts, userHasNFT]);
 
   if (!utility) {
     return (
@@ -58,12 +78,9 @@ const Step3Whales: React.FC<Props> = ({
     );
   }
 
-  console.log(
-    utility?.nfts?.error?.map((i) => console.log(i)),
-    "is the error"
-  );
+  console.log(utility.nfts, userHasNFT);
 
-  if (utility.nfts && utility.nfts.error.length != 0) {
+  if (!userHasNFT && !isLoading) {
     return <ClaimNFT />;
   }
 
@@ -92,7 +109,7 @@ const Step3Whales: React.FC<Props> = ({
         Your NFTs
       </h3>
       <p className="pb-4">Choose the one to connect with</p>
-      {NFTs ? (
+      {NFTs && !isLoading ? (
         NFTs.nfts.map((nft, k) => {
           console.log(utility.nfts.nfts);
           fetchNFTMetaData(nft.attributes.tokenUri.gateway);

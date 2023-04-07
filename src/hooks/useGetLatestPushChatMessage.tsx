@@ -5,6 +5,7 @@ import useLocalStorage from "./useLocalStorage";
 import usePushUser from "./usePushUser";
 import { IMessageIPFS, IUser } from "@pushprotocol/restapi";
 import { useState } from "react";
+import { toast } from "react-hot-toast";
 
 const useGetLatestPushChatMessage = () => {
   const address = useAddress();
@@ -54,7 +55,7 @@ const useGetLatestPushChatMessage = () => {
       setLatestChats(chatHistory);
     } catch (error) {
       const err = error as Error;
-      alert(err.message);
+      toast.error(err.name);
       return;
     }
   }

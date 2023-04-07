@@ -36,7 +36,7 @@ const ChatDetail: FC<Props> = ({
   }, [messgesRef]);
 
   return (
-    <div className="flex-1 flex flex-col grid-rows-[7] shadow-sm px-4 py-2 rounded-lg bg-white">
+    <div className="flex-1 max-w-[500px] max-h-[600px] w-full flex flex-col grid-rows-[7] shadow-sm px-4 py-2 rounded-lg bg-white">
       {isChatOpen ? (
         <>
           {activeChatData && (
