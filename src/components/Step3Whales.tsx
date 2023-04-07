@@ -109,40 +109,39 @@ const Step3Whales: React.FC<Props> = ({
         Your NFTs
       </h3>
       <p className="pb-4">Choose the one to connect with</p>
-      {NFTs ? (
-        NFTs.nfts.map((nft, k) => {
-          console.log(utility.nfts.nfts);
-          fetchNFTMetaData(nft.attributes.tokenUri.gateway);
-          return (
-            <div
-              key={k}
-              className={
-                selected
-                  ? "flex flex-col w-fit  border-2 border-primarySky cursor-pointer p-4 gap-2 text-sm bg-white rounded-lg"
-                  : "flex flex-col w-fit  border-2 border-background p-4 cursor-pointer gap-2 text-sm bg-white rounded-lg"
-              }
-              onClick={() => {
-                setSelected((prev) => !prev);
-                setSelectedTokenId(nft.attributes.id.tokenId);
-              }}
-            >
-              <div className="relative h-[200px] w-[200px] rounded-md bg-primarySky shadow-md">
-                <Image
-                  src={NFTImage ? NFTImage : exampleImage}
-                  alt="nft_image"
-                  fill
-                  className="absolute"
-                  style={{
-                    objectFit: "contain",
-                  }}
-                ></Image>
-              </div>
-              <div>{nft.attributes.contractMetadata.name}</div>
-              <div>{nft.attributes.description}</div>
+      {NFTs?.nfts.map((nft, k) => {
+        console.log(utility.nfts.nfts);
+        fetchNFTMetaData(nft.attributes.tokenUri.gateway);
+        return (
+          <div
+            key={k}
+            className={
+              selected
+                ? "flex flex-col w-fit  border-2 border-primarySky cursor-pointer p-4 gap-2 text-sm bg-white rounded-lg"
+                : "flex flex-col w-fit  border-2 border-background p-4 cursor-pointer gap-2 text-sm bg-white rounded-lg"
+            }
+            onClick={() => {
+              setSelected((prev) => !prev);
+              setSelectedTokenId(nft.attributes.id.tokenId);
+            }}
+          >
+            <div className="relative h-[200px] w-[200px] rounded-md bg-primarySky shadow-md">
+              <Image
+                src={NFTImage ? NFTImage : exampleImage}
+                alt="nft_image"
+                fill
+                className="absolute"
+                style={{
+                  objectFit: "contain",
+                }}
+              ></Image>
             </div>
-          );
-        })
-      ) : (
+            <div>{nft.attributes.contractMetadata.name}</div>
+            <div>{nft.attributes.description}</div>
+          </div>
+        );
+      })}
+      {!NFTs && (
         <span className="block h-6 w-6 rounded-full border-4 border-gray-500 border-b-transparent animate-spin"></span>
       )}
       {selected && (
