@@ -2,8 +2,6 @@ import Head from "next/head";
 import { Inter } from "next/font/google";
 import { useState, useEffect } from "react";
 import Header from "@/components/Header";
-import AccessPage from "@/components/AccessPage";
-import AccessModal from "@/components/AccessModal";
 import Chat from "@/components/Chat";
 import DynamicUtilityComponent from "@/components/DynamicUtility";
 import { useAddress } from "@thirdweb-dev/react";
@@ -27,10 +25,18 @@ export default function Home() {
         className={`w-screen min-h-screen relative flex flex-col bg-background ${inter.className}`}
       >
         <Header />
-        {!hasAccess ? (
-          <DynamicUtilityComponent setHasAccess={setHasAccess} />
+        {address ? (
+          !hasAccess ? (
+            <DynamicUtilityComponent setHasAccess={setHasAccess} />
+          ) : (
+            <Chat />
+          )
         ) : (
-          <Chat />
+          <div className="text-center  text-gray-500 flex items-center justify-center">
+            <h3 className="bg-white px-8 py-6 mt-8 w-fit rounded-md border-[1px] shadow-md">
+              Please Connect Your Wallet first
+            </h3>
+          </div>
         )}
       </main>
     </>
