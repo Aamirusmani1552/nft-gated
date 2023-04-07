@@ -11,13 +11,14 @@ export async function getEthereumSigner() {
         (window as any).ethereum
       );
 
-      try {
-        // Request access to user's Metamask account
-        await window.ethereum.request({ method: "eth_requestAccounts" });
-      } catch (error) {
-        // Handle error
-        console.error(error);
-      }
+      // try {
+      //   let
+      //   // Request access to user's Metamask account
+      //   await window.ethereum({ method: "eth_requestAccounts" });
+      // } catch (error) {
+      //   // Handle error
+      //   console.error(error);
+      // }
 
       // Create signer object with user's Ethereum account
       const signer = provider.getSigner();

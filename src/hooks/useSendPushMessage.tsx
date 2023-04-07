@@ -40,7 +40,6 @@ const useSendPushMessage = () => {
         user = JSON.parse(userString) as IUser;
       } else {
         await pushUser();
-        console.log("pushing user");
         user = (await JSON.parse(await getLocalStorage("push_user"))) as IUser;
       }
 
@@ -48,8 +47,6 @@ const useSendPushMessage = () => {
       const decryptedPvtKey = await JSON.parse(
         await getLocalStorage("push_user_private")
       );
-
-      console.log();
 
       const response = await PushAPI.chat.send({
         messageContent: message,
