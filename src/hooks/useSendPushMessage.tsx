@@ -1,6 +1,5 @@
-import { ChatSendOptionsType, IUser } from "@pushprotocol/restapi";
-import { useAddress, useSigner } from "@thirdweb-dev/react";
-import React from "react";
+import { IUser } from "@pushprotocol/restapi";
+import { useAddress } from "@thirdweb-dev/react";
 import useLocalStorage from "./useLocalStorage";
 import usePushUser from "./usePushUser";
 import * as PushAPI from "@pushprotocol/restapi";
@@ -62,6 +61,7 @@ const useSendPushMessage = () => {
       });
 
       console.log(response);
+      return response;
     } catch (error) {
       console.log(error);
       const err = error as Error;

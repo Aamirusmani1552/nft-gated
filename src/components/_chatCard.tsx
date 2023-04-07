@@ -9,6 +9,7 @@ type Props = {
   setIsChatOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setActiveChat: React.Dispatch<React.SetStateAction<string>>;
   activeChat: string;
+  setActiveChatData: React.Dispatch<React.SetStateAction<IFeeds | undefined>>;
 };
 
 const ChatCard: FC<Props> = ({
@@ -16,6 +17,7 @@ const ChatCard: FC<Props> = ({
   setIsChatOpen,
   setActiveChat,
   activeChat,
+  setActiveChatData,
 }): ReactElement => {
   return (
     <div
@@ -24,6 +26,7 @@ const ChatCard: FC<Props> = ({
         if (activeChat == details.did) return;
         setIsChatOpen(true);
         setActiveChat(details.did);
+        setActiveChatData(details);
       }}
     >
       <div className="relative w-12 h-12 rounded-full ">
@@ -52,7 +55,7 @@ const ChatCard: FC<Props> = ({
               dateFormat(new Date(details.intentTimestamp), "hh:MM")}
           </span>
         </span>
-        <span className="truncate text-xs text-gray-500">
+        <span className="truncate text-xs text-gray-500 max-w-[100px]">
           {details.msg.messageContent}
         </span>
       </div>

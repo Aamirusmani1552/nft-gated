@@ -1,15 +1,20 @@
 import { useState, useEffect } from "react";
 import { createSocketConnection, EVENTS } from "@pushprotocol/socket";
 import { ENV } from "@pushprotocol/socket/src/lib/constants";
-import { ChainId } from "@thirdweb-dev/sdk";
-import { IFeeds, IMessageIPFS } from "@pushprotocol/restapi";
+import { IMessageIPFS } from "@pushprotocol/restapi";
 import { useAddress } from "@thirdweb-dev/react";
+import useGetUsersChatHistory from "./useGetUsersChatHistory";
+import useDecryptPushChats from "./useDecryptPushChats";
+import useDecryptSingleChat from "./useDecryptSingleChat";
+import { error } from "console";
 
 function usePushSocket() {
   const [sdkSocket, setSDKSocket] = useState<any>(null);
   const [isConnected, setIsConnected] = useState(sdkSocket?.connected);
-  const [newMessage, setNewMessage] = useState<IMessageIPFS>();
+  const { chatHistory, getchatHistory, setChatsHistory } =
+    useGetUsersChatHistory();
   const address = useAddress();
+  const { decryptChat } = useDecryptSingleChat();
 
   const addSocketEvents = () => {
     console.log("adding events...");
@@ -25,11 +30,20 @@ function usePushSocket() {
 
     sdkSocket?.on(EVENTS.CHAT_RECEIVED_MESSAGE, (message: IMessageIPFS) => {
       console.log(message);
-      setNewMessage(message);
+      const decryptedChat = decryptChat(message)
+        .then((data) => {
+          if (data) setChatsHistory((prev) => [data, ...prev]);
+        })
+        .catch((error) => {
+          console.log(error);
+          alert(error);
+        });
     });
 
     console.log("events added");
   };
+
+  console.log(chatHistory, "will be the new chat history");
 
   const removeSocketEvents = () => {
     sdkSocket?.off(EVENTS.CONNECT);
@@ -68,7 +82,9 @@ function usePushSocket() {
     addSocketEvents,
     toggleConnection,
     isConnected,
-    newMessage,
+    chatHistory,
+    setChatsHistory,
+    getchatHistory,
   };
 }
 

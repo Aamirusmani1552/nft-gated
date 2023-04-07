@@ -7,11 +7,16 @@ import {
   walletConnectV1,
   walletConnect,
   safeWallet,
-  paperWallet,
 } from "@thirdweb-dev/react";
 import { useEffect } from "react";
 
 export default function App({ Component, pageProps }: AppProps) {
+  useEffect(() => {
+    (window as any)?.ethereum?.on("accountsChanged", function () {
+      // Time to reload your interface with accounts[0]!
+      location.reload();
+    });
+  }, []);
   return (
     <ThirdwebProvider
       supportedWallets={[

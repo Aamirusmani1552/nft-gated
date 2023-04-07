@@ -2,14 +2,16 @@ import { NftValidationUtility } from "@whal3s/whal3s.js";
 import exampleImage from "../../public/nature.png";
 import axios from "axios";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BsArrowRight } from "react-icons/bs";
 import { motion } from "framer-motion";
 import ClaimNFT from "./_claimNft";
 import Loader from "./Loader";
+import { WalletNftValidationResponse } from "@whal3s/whal3s.js/build/types/types/types-internal";
 
 type Props = {
   utility: NftValidationUtility;
+  step: number;
 };
 
 type NftFetchResult = {
@@ -19,11 +21,34 @@ type NftFetchResult = {
   attributes: [];
 };
 
-const Step3Whales: React.FC<Props> = ({ utility }): React.ReactElement => {
+const Step3Whales: React.FC<Props> = ({
+  utility,
+  step,
+}): React.ReactElement => {
   const [NFTImage, setNFTImage] = useState<string>();
   const [selected, setSelected] = useState<boolean>(false);
   const [selectedTokenId, setSelectedTokenId] = useState<string>();
-  console.log(utility, "is the utitlity");
+  const [hasNFT, setHasNFT] = useState<boolean>(false);
+  const [NFTs, setNFTs] = useState<WalletNftValidationResponse>();
+
+  console.log(utility.nfts.nfts, "is the utitlity");
+
+  useEffect(() => {
+    if (utility.nfts.nfts && utility.nfts.error.length == 0) return;
+    let intervalId;
+    setHasNFT(true);
+    if (
+      step == NftValidationUtility.STEP_NFTS_FETCHED &&
+      utility.nfts.nfts.length == 0
+    ) {
+      intervalId = setTimeout(() => {
+        setHasNFT(false);
+        setNFTs(utility.nfts);
+      }, 2000);
+    }
+  }, [step, hasNFT, utility.nfts.nfts]);
+
+  console.log(hasNFT, utility.nfts.nfts, "is the result");
 
   if (!utility) {
     return (
@@ -33,7 +58,12 @@ const Step3Whales: React.FC<Props> = ({ utility }): React.ReactElement => {
     );
   }
 
-  if (!utility.nfts.nfts) {
+  console.log(
+    utility?.nfts?.error?.map((i) => console.log(i)),
+    "is the error"
+  );
+
+  if (utility.nfts && utility.nfts.error.length != 0) {
     return <ClaimNFT />;
   }
 
@@ -54,45 +84,50 @@ const Step3Whales: React.FC<Props> = ({ utility }): React.ReactElement => {
       });
   }
 
-  console.log(NFTImage, "is the image");
+  console.log(step);
+
   return (
     <div className="text-base font-normal flex flex-col items-center gap-4">
       <h3 className=" text-primaryPurple text-center font-bold text-3xl">
         Your NFTs
       </h3>
       <p className="pb-4">Choose the one to connect with</p>
-      {utility.nfts.nfts.map((nft, k) => {
-        console.log(utility.nfts.nfts);
-        fetchNFTMetaData(nft.attributes.tokenUri.gateway);
-        return (
-          <div
-            key={k}
-            className={
-              selected
-                ? "flex flex-col w-fit  border-2 border-primarySky cursor-pointer p-4 gap-2 text-sm bg-white rounded-lg"
-                : "flex flex-col w-fit  border-2 border-background p-4 cursor-pointer gap-2 text-sm bg-white rounded-lg"
-            }
-            onClick={() => {
-              setSelected((prev) => !prev);
-              setSelectedTokenId(nft.attributes.id.tokenId);
-            }}
-          >
-            <div className="relative h-[200px] w-[200px] rounded-md bg-primarySky shadow-md">
-              <Image
-                src={NFTImage ? NFTImage : exampleImage}
-                alt="nft_image"
-                fill
-                className="absolute"
-                style={{
-                  objectFit: "contain",
-                }}
-              ></Image>
+      {NFTs ? (
+        NFTs.nfts.map((nft, k) => {
+          console.log(utility.nfts.nfts);
+          fetchNFTMetaData(nft.attributes.tokenUri.gateway);
+          return (
+            <div
+              key={k}
+              className={
+                selected
+                  ? "flex flex-col w-fit  border-2 border-primarySky cursor-pointer p-4 gap-2 text-sm bg-white rounded-lg"
+                  : "flex flex-col w-fit  border-2 border-background p-4 cursor-pointer gap-2 text-sm bg-white rounded-lg"
+              }
+              onClick={() => {
+                setSelected((prev) => !prev);
+                setSelectedTokenId(nft.attributes.id.tokenId);
+              }}
+            >
+              <div className="relative h-[200px] w-[200px] rounded-md bg-primarySky shadow-md">
+                <Image
+                  src={NFTImage ? NFTImage : exampleImage}
+                  alt="nft_image"
+                  fill
+                  className="absolute"
+                  style={{
+                    objectFit: "contain",
+                  }}
+                ></Image>
+              </div>
+              <div>{nft.attributes.contractMetadata.name}</div>
+              <div>{nft.attributes.description}</div>
             </div>
-            <div>{nft.attributes.contractMetadata.name}</div>
-            <div>{nft.attributes.description}</div>
-          </div>
-        );
-      })}
+          );
+        })
+      ) : (
+        <span className="block h-6 w-6 rounded-full border-4 border-gray-500 border-b-transparent animate-spin"></span>
+      )}
       {selected && (
         <div>
           <motion.button

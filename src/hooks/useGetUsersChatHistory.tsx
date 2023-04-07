@@ -10,7 +10,7 @@ const useGetUsersChatHistory = () => {
   const address = useAddress();
   const { pushUser } = usePushUser();
   const { getLocalStorage } = useLocalStorage();
-  const [chatHistory, setChatsHistory] = useState<IMessageIPFS[]>();
+  const [chatHistory, setChatsHistory] = useState<IMessageIPFS[]>([]);
 
   async function getchatHistory(receiver: string) {
     try {
