@@ -141,7 +141,7 @@ const Step3Whales: React.FC<Props> = ({
           </div>
         );
       })}
-      {!NFTs && (
+      {utility?.nfts?.nfts?.length == 0 && (
         <span className="block h-6 w-6 rounded-full border-4 border-gray-500 border-b-transparent animate-spin"></span>
       )}
       {selected && (
