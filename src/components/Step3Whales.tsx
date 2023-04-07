@@ -78,7 +78,7 @@ const Step3Whales: React.FC<Props> = ({
     );
   }
 
-  console.log(utility.nfts, userHasNFT);
+  console.log(NFTs, userHasNFT);
 
   if (!userHasNFT && !isLoading) {
     return <ClaimNFT />;
@@ -109,7 +109,7 @@ const Step3Whales: React.FC<Props> = ({
         Your NFTs
       </h3>
       <p className="pb-4">Choose the one to connect with</p>
-      {NFTs?.nfts.map((nft, k) => {
+      {utility?.nfts?.nfts.map((nft, k) => {
         console.log(utility.nfts.nfts);
         fetchNFTMetaData(nft.attributes.tokenUri.gateway);
         return (
